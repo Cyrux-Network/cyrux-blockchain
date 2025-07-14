@@ -1,0 +1,123 @@
+[profile.release]
+panic = "abort"
+opt-level = 3
+
+# make sure dev builds with backtrace do
+# not slow us down
+[profile.dev.package.backtrace]
+inherits = "release"
+
+[profile.production]
+inherits = "release"
+lto = true
+codegen-units = 1
+
+[profile.testnet]
+inherits = "release"
+debug = 1 # debug symbols are useful for profilers
+debug-assertions = true
+overflow-checks = true
+
+[workspace]
+resolver = "2"
+metadata.dylint.libraries = [
+    { git = "https://github.com/Cyrux-Network/dylint-rules.git", pattern = "rules/*" },
+]
+
+exclude = [
+	"subxt",
+	"standalone/pruntime",
+	"standalone/prouter",
+	"standalone/crate-version",
+	"crates/pink-drivers/system",
+	"crates/pink-drivers/sidevm_deployer",
+	"crates/pink-drivers/tokenomic",
+	"e2e/contracts",
+]
+
+members = [
+	"standalone/executor",
+	"standalone/rpc",
+	"standalone/node",
+	"standalone/runtime",
+	"standalone/pherry",
+	"standalone/prb",
+	"standalone/replay",
+	"standalone/headers-cache",
+	"standalone/justification-validate",
+	"standalone/sfq-test",
+	"standalone/phat-poller",
+	"crates/cyrux-trie-storage",
+	"crates/cyrux-mq",
+	"crates/cyrux-crypto",
+	"crates/cyrux-node-rpc-ext",
+	"crates/cyrux-types",
+	"crates/cyrux-git-revision",
+	"crates/prpc",
+	"crates/prpc-build",
+	"crates/phactory",
+	"crates/phactory/api",
+	"crates/phactory/pal",
+	"crates/cyrux-types",
+	"crates/cyrux-async-executor",
+	"crates/cyrux-allocator",
+	"crates/cyrux-sanitized-logger",
+	"crates/cyrux-wasm-checker",
+	"crates/cyrux-clap-parsers",
+	"crates/cyrux-wasmer-tunables",
+	"crates/cyrux-rocket-middleware",
+	"crates/pink/loader",
+	"crates/pink/runtime",
+	"crates/pink/capi",
+	"crates/pink/macro",
+	"crates/pink/pink-types",
+	"crates/pink/pink",
+	"crates/pink/chain-extension",
+	"crates/pink-libs/s3",
+	"crates/pink-libs/utils",
+	"crates/pink-libs/subrpc",
+	"crates/pink-libs/kv-session",
+	"crates/phaxt",
+	"crates/pink/pink/macro",
+	"crates/sidevm/host-runtime",
+	"crates/sidevm/env",
+	"crates/sidevm/macro",
+	"crates/sidevm/sidevm",
+	"crates/cyrux-serde-more",
+	"crates/rustfmt-snippet",
+	"crates/reqwest-env-proxy",
+	"crates/cyrux-scheduler",
+	"crates/this-crate",
+	"crates/sgx-attestation",
+	"crates/type-info-stringify",
+	"pallets/cyrux",
+	"pallets/cyrux/mq-runtime-api",
+	"pallets/offchain-rollup",
+	"scripts/debug-cli"
+]
+
+[patch.crates-io]
+# TODO.kevin: Move back to crates.io once it released 1.0
+derive_more = { version = "0.99.17", git = "https://github.com/JelteF/derive_more" }
+
+ring = { git = "https://github.com/jasl/ring-xous", branch = "better-wasm32-support" }
+
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-core-hashing = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-std = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-runtime-interface = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+
+# For pink-chain-extension, it will introduce Substrate from crates-io which usually different with polkadot-branch
+pink = { path = "crates/pink/pink" }
+pink-chain-extension = { path = "crates/pink/chain-extension" }
+
+# The substrate dependencies use old version of crypto crates. Some of them, listed below, hard require subtle=v2.4
+# but latest rustls requires subtle v2.5 which cause it conflict. Ideally, substrate should upgrade it's dependencies
+# to latest version.
+# Here we patch the old crates to use subtle v2.5 as a workaround.
+aes-gcm = { git = "https://github.com/kvinwang/AEADs.git", branch = "subtle-v2.5"}
+crypto-mac = { git = "https://github.com/kvinwang/rust-crypto-traits.git", branch = "subtle-v2.5" }
+universal-hash = { git = "https://github.com/kvinwang/rust-crypto-traits.git", branch = "subtle-v2.5" }
+
+[patch."https://github.com/paritytech/polkadot-sdk.git"]
+sc-consensus-grandpa = { git = "https://github.com/Cyrux-Network/polkadot-sdk.git", branch = "cyrux-patch-polkadot-v1.5.0" }
