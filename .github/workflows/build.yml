@@ -1,0 +1,132 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  YARN_ENABLE_IMMUTABLE_INSTALLS: false
+
+jobs:
+  build-core:
+    name: Build core
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - uses: ./.github/actions/setup-cache
+        with:
+          key: core
+      - uses: ./.github/actions/maximize-disk-space
+      - uses: ./.github/actions/build-core
+        env:
+          SCCACHE_GHA_ENABLED: "true"
+          RUSTC_WRAPPER: "sccache"
+  build-pruntime:
+    name: Build pruntime
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - uses: ./.github/actions/setup-cache
+        with:
+          key: pruntime
+      - uses: ./.github/actions/maximize-disk-space
+      - uses: ./.github/actions/build-pruntime
+        env:
+          SCCACHE_GHA_ENABLED: "true"
+          RUSTC_WRAPPER: "sccache"
+  build-prouter:
+    name: Build prouter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - uses: ./.github/actions/build-prouter
+  build-contracts:
+    name: Build contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - uses: ./.github/actions/build-contracts
+  e2e-test:
+    name: Run E2E tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - uses: ./.github/actions/install_toolchain
+      - name: Install gramine
+        run: sudo bash dockerfile.d/01_apt_gramine.sh
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install yarn 2
+        run: sudo npm install -g yarn && yarn set version 3.6.4
+      - name: Download core-blockchain binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: core-blockchain-binaries
+          path: ./target/release
+      - name: Download pruntime binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: pruntime-binaries
+          path: ./standalone/pruntime/bin
+      - name: Download contract binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: contract-binaries
+          path: ./e2e/res
+      - name: Build JS-SDK
+        run: cd ./frontend/packages/sdk && yarn && yarn build
+      - name: Run E2E tests
+        run: yarn set version 3.6.4 && cd ./e2e/ && yarn && yarn build:proto && yarn test
+      - name: Pack logs if failed
+        if: failure()
+        run: tar czvf e2e-logs.tar.gz e2e
+      - name: Upload logs if failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-logs
+          path: e2e-logs.tar.gz
+    needs: [ build-core, build-pruntime, build-contracts ]
+
+  cargo-tests:
+    name: Run cargo tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - uses: ./.github/actions/install_toolchain
+      - uses: ./.github/actions/maximize-disk-space
+
+
+  cargo-clippy:
+    name: Run cargo clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - uses: ./.github/actions/install_toolchain
+      - name: Install clippy
+        run: rustup component add clippy
+      - uses: ./.github/actions/maximize-disk-space
+      - name: Run cargo clippy
+        run: cargo clippy --tests -- -D warnings && cd standalone/pruntime && cargo clippy --tests -- -D warnings
