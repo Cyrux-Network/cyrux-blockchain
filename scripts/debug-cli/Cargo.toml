@@ -1,0 +1,25 @@
+[package]
+name = "debug-cli"
+version = "0.1.0"
+authors = ["h4x3rotab <h4x3rotab@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+base64 = "0.11"
+codec = { package = "parity-scale-codec", version = "3.6.5" }
+hex = "0.4"
+clap = { version = "4.0.32", features = ["derive"] }
+anyhow = "1.0.69"
+
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+frame-support = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sc-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+
+cyrux-types = { path = "../../crates/cyrux-types" }
+cyrux-pallets = { path = "../../pallets/cyrux" }
+phactory-api = { path = "../../crates/phactory/api", features = ["pruntime-client"] }
+cyrux-crypto = { path = "../../crates/cyrux-crypto" }
+
+tokio = { version = "1.24.2", features = ["full"] }
+pink-runtime = { path = "../../crates/pink/runtime" }

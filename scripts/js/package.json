@@ -1,0 +1,32 @@
+{
+  "name": "cyrux-substrate-scripts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "rollup -c rollup.config.mjs",
+    "build:all": "rollup -c rollup.config.mjs src/*.js",
+    "build:proto": "./build_proto.sh"
+  },
+  "dependencies": {
+    "@cyrux/sdk": "^0.4.0",
+    "@polkadot/api": "^10.6.1",
+    "@polkadot/types": "^10.6.1",
+    "@polkadot/util": "^12.1.2",
+    "@polkadot/util-crypto": "^12.1.2",
+    "axios": "^1.6.0",
+    "bn.js": "^5.2.1",
+    "commander": "^10.0.0",
+    "decimal.js": "^10.4.3",
+    "dotenv": "^16.0.3",
+    "papaparse": "^5.4.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "protobufjs": "^7.2.5",
+    "rollup": "^3.19.1",
+    "rollup-plugin-terser": "^7.0.2"
+  }
+}
