@@ -1,0 +1,31 @@
+[package]
+name = "cyrux-node-rpc-ext"
+version = "0.1.0"
+edition = "2018"
+authors = ["Cyrux Network"]
+license = "Apache-2.0"
+homepage = "https://cyrux.network/"
+repository = "https://github.com/Cyrux-Network/cyrux-blockchain"
+
+[dependencies]
+# third-party dependencies
+thiserror = "1.0"
+jsonrpsee = { version = "0.16.2", features = ["server", "macros"] }
+impl-serde = "0.4.0"
+log = { version = "0.4.14", default-features = false }
+hex = { version = "0.4.3", default-features = false }
+codec = { package = "parity-scale-codec", version = "3.6.5" }
+
+# primitives
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-blockchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+
+# client dependencies
+sc-client-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sc-transaction-pool-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+
+cyrux-mq = { path = "../../crates/cyrux-mq" }
+cyrux-pallets = { path = "../../pallets/cyrux" }
+pallet-mq-runtime-api = { path = "../../pallets/cyrux/mq-runtime-api" }
+ext-types = { path = "./types", package = "cyrux-node-rpc-ext-types" }
