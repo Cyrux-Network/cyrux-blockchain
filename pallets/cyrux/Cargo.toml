@@ -1,0 +1,89 @@
+[package]
+authors = ["Cyrux Network"]
+edition = "2021"
+name = "cyrux-pallets"
+version = "4.1.0"
+license = "Apache 2.0"
+homepage = "https://cyrux.network/"
+repository = "https://github.com/Cyrux-Network/cyrux-blockchain"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "3.6.5", default-features = false, features = ["derive"] }
+scale-info = { version = "2.10.0", default-features = false, features = ["derive"] }
+
+primitive-types = { version = "0.12.2", default-features = false, features = ["codec", "byteorder"] }
+pallet-assets = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+pallet-democracy = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+pallet-uniques = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+pallet-preimage = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+
+# RMRK dependencies
+pallet-rmrk-core = { git = "https://github.com/Cyrux-Network/rmrk-substrate", branch = "release-polkadot-v1.5.0", default-features = false }
+rmrk-traits = { git = "https://github.com/Cyrux-Network/rmrk-substrate", branch = "release-polkadot-v1.5.0", default-features = false }
+
+frame-support = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+frame-system = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+sp-std = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+sp-io = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+log = { version = "0.4.14", default-features = false }
+
+pallet-balances = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+
+cyrux-types = { path = "../../crates/cyrux-types", default-features = false, features = ["enable_serde", "sgx-attestation"] }
+chrono = { version = "0.4.22", default-features = false }
+hex = { version = "0.4", default-features = false }
+hex-literal = "0.4.1"
+serde = { version = "1.0.101", default-features = false, optional = true }
+serde_json = { version = "1.0.41", default-features = false, features = ["alloc"] }
+fixed = { version = "1.16.1", default-features = false }
+fixed-macro = "1.2"
+fixed-sqrt = { version = "0.2", default-features = false }
+
+sgx-attestation = { path = "../../crates/sgx-attestation", default-features = false, features = ["verify"] }
+
+[dev-dependencies]
+frame-support-test = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+assert_matches = "1.4.0"
+pallet-timestamp = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+rand = "0.8.5"
+insta = "1"
+pallet-scheduler = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+pallet-collective = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"scale-info/std",
+	"sp-runtime/std",
+	"frame-support/std",
+	"frame-system/std",
+	"pallet-assets/std",
+	"pallet-democracy/std",
+	"sp-io/std",
+	"sp-std/std",
+	"sp-core/std",
+	"frame-support/std",
+	"frame-system/std",
+	"pallet-balances/std",
+	"pallet-uniques/std",
+	"log/std",
+	"cyrux-types/enable_serde",
+	"pallet-rmrk-core/std",
+	"rmrk-traits/std",
+	"pallet-collective/std",
+	"pallet-preimage/std",
+	"serde/derive",
+	"serde/alloc",
+	"sgx-attestation/std",
+]
+runtime-benchmarks = [
+]
+try-runtime = ["frame-support/try-runtime"]
+native = [
+]
