@@ -1,0 +1,23 @@
+[package]
+name = "headers-cache"
+version = "0.1.2"
+edition = "2021"
+
+[dependencies]
+pherry = { path = "../pherry" }
+
+log = "0.4.14"
+anyhow = "1.0.69"
+clap = { version = "4.0.32", features = ["derive"] }
+tokio = { version = "1.24.2", features = ["full"] }
+env_logger = "0.9.0"
+rocket = "0.5.0"
+scale = { package = 'parity-scale-codec', version = "3.6.5" }
+rocksdb = { version = "0.21.0", default-features = false, features = ["snappy", "jemalloc"] } # aligned with kvdb-rocksdb
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+cyrux-rocket-middleware = { path = "../../crates/cyrux-rocket-middleware" }
+reqwest = { version = "0.11", default-features = false, features = ["rustls-tls", "socks"] }
+futures = "0.3"
+rand = "0.8"
+hex = "0.4"
