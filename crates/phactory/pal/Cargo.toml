@@ -1,0 +1,10 @@
+[package]
+name = "phactory-pal"
+version = "0.1.0"
+edition = "2018"
+description = "Platform abstraction layer for Phactory Runtime"
+
+[dependencies]
+anyhow = "1.0.69"
+cyrux-types = { path = "../../cyrux-types", default-features = false, features = ["enable_serde", "sgx"] }
+phactory-api = { path = "../api" }

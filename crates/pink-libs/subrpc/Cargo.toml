@@ -1,0 +1,45 @@
+[package]
+name = "pink-subrpc"
+version = "0.8.0"
+authors = ["Cyrux Network"]
+edition = "2021"
+license = "Apache-2.0"
+homepage = "https://cyrux.network/"
+repository = "https://github.com/Cyrux-Network/index-contract"
+description = "A substrate rpc client running in pink."
+
+[lib]
+name = "pink_subrpc"
+path = "src/lib.rs"
+
+[dependencies]
+scale = { package = "parity-scale-codec", version = "3.6.5", default-features = false, features = ["derive"] }
+scale-info = { version = "2.11.3", default-features = false, features = ["derive"], optional = true }
+primitive-types = { version = "0.12.2", default-features = false, features = ["codec", "scale-info"] }
+
+hex-literal = "0.4.1"
+hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
+
+pink = { version = "0.4.1", path = "../../pink/pink", default-features = false }
+sp-core-hashing = { version = "9", default-features = false }
+
+serde = { version = "1.0.209", default-features = false, features = ["derive", "alloc"]}
+pink-json = { version = "0.4", default-features = false }
+
+ss58-registry = { version = "1.47.0", default-features = false }
+base58 = { version = "0.2.0", default-features = false }
+
+[dev-dependencies]
+pink-chain-extension = { path = "../../pink/chain-extension" }
+xcm = { package = "staging-xcm", git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false, features = ["std"] }
+
+[features]
+default = ["std"]
+std = [
+    "scale/std",
+    "scale-info/std",
+    "pink/std",
+    "pink-json/std",
+    "sp-core-hashing/std",
+    "primitive-types/std",
+]

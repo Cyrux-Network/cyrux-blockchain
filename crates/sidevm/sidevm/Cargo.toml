@@ -1,0 +1,23 @@
+[package]
+description = "Framework to help developing cyrux sidevm program"
+license = "Apache-2.0"
+homepage = "https://github.com/Cyrux-Network/cyrux-blockchain"
+edition = "2021"
+name = "sidevm"
+version = "0.2.0-alpha.7"
+
+[dependencies]
+sidevm-env = { version = "0.2.0-alpha.7", path = "../env" }
+sidevm-macro = { version = "0.2.0-alpha.7", path = "../macro" }
+log = "0.4.16"
+derive_more = "0.99"
+
+hyper = { version = "0.14.18", features = ["server", "client"], optional = true }
+tokio = { version = "1", optional = true }
+futures = "0.3"
+scale = { version = "3.6.5", package = "parity-scale-codec" }
+pin-project = "1"
+lazy_static = "1"
+
+[features]
+default = ["hyper", "tokio"]

@@ -1,0 +1,553 @@
+---
+source: crates/phactory/src/lib.rs
+assertion_line: 365
+expression: "type_info_stringify::<Phactory<()>>()"
+---
+Option = enum {
+    [0]None,
+    [1]Some(phala_types::AttestationProvider)
+}
+phala_types::AttestationProvider = enum {
+    [0]Root,
+    [1]Ias,
+    [2]Dcap,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory_api::proto_generated::pruntime_rpc::InitRuntimeResponse)
+}
+phactory_api::proto_generated::pruntime_rpc::InitRuntimeResponse = struct {
+    encoded_runtime_info: Vec<u8>,
+    encoded_genesis_block_hash: Vec<u8>,
+    encoded_public_key: Vec<u8>,
+    encoded_ecdh_public_key: Vec<u8>,
+    attestation: Option<phactory_api::proto_generated::pruntime_rpc::Attestation>,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory_api::proto_generated::pruntime_rpc::Attestation)
+}
+phactory_api::proto_generated::pruntime_rpc::Attestation = struct {
+    version: i32,
+    provider: String,
+    payload: Option<phactory_api::proto_generated::pruntime_rpc::AttestationReport>,
+    encoded_report: Vec<u8>,
+    timestamp: u64,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory_api::proto_generated::pruntime_rpc::AttestationReport)
+}
+phactory_api::proto_generated::pruntime_rpc::AttestationReport = struct {
+    report: String,
+    signature: Vec<u8>,
+    signing_cert: Vec<u8>,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory::RuntimeState)
+}
+phactory::RuntimeState = struct {
+    storage_synchronizer: phactory_api::storage_sync::Synchronizer<phactory::light_validation::LightValidation<phala_node_runtime::Runtime>>,
+    genesis_block_hash: primitive_types::H256,
+    para_id: u32,
+}
+phactory_api::storage_sync::Synchronizer = enum {
+    [0]Solo(phactory_api::storage_sync::SolochainSynchronizer<phactory::light_validation::LightValidation<phala_node_runtime::Runtime>>)
+    [1]Para(phactory_api::storage_sync::ParachainSynchronizer<phactory::light_validation::LightValidation<phala_node_runtime::Runtime>>)
+}
+phactory::light_validation::LightValidation = struct {
+    num_bridges: u64,
+    tracked_bridges: BTreeMap<u64,phactory::light_validation::BridgeInfo<phala_node_runtime::Runtime>>,
+}
+phala_node_runtime::Runtime = struct {
+}
+BTreeMap = struct {
+    : Vec<(u64, phactory::light_validation::BridgeInfo<phala_node_runtime::Runtime>)>,
+}
+phactory::light_validation::BridgeInfo = struct {
+    last_finalized_block_header: sp_runtime::generic::header::Header<u32,Hash>,
+    current_set: phactory_api::blocks::AuthoritySet,
+}
+sp_runtime::generic::header::Header = struct {
+    parent_hash: primitive_types::H256,
+    number: Compact<u32>,
+    state_root: primitive_types::H256,
+    extrinsics_root: primitive_types::H256,
+    digest: sp_runtime::generic::digest::Digest,
+}
+primitive_types::H256 = struct {
+    : [u8; 32],
+}
+sp_runtime::generic::digest::Digest = struct {
+    logs: Vec<sp_runtime::generic::digest::DigestItem>,
+}
+sp_runtime::generic::digest::DigestItem = enum {
+    [6]PreRuntime([u8; 4], Vec<u8>)
+    [4]Consensus([u8; 4], Vec<u8>)
+    [5]Seal([u8; 4], Vec<u8>)
+    [0]Other(Vec<u8>)
+    [8]RuntimeEnvironmentUpdated,
+}
+phactory_api::blocks::AuthoritySet = struct {
+    list: Vec<(sp_consensus_grandpa::app::Public, u64)>,
+    id: u64,
+}
+sp_consensus_grandpa::app::Public = struct {
+    : sp_core::ed25519::Public,
+}
+sp_core::ed25519::Public = struct {
+    : [u8; 32],
+}
+phactory_api::storage_sync::SolochainSynchronizer = struct {
+    sync_state: phactory_api::storage_sync::BlockSyncState<phactory::light_validation::LightValidation<phala_node_runtime::Runtime>>,
+}
+phactory_api::storage_sync::BlockSyncState = struct {
+    validator: phactory::light_validation::LightValidation<phala_node_runtime::Runtime>,
+    main_bridge: u64,
+    header_number_next: u32,
+    block_number_next: u32,
+    genesis_state_validated: bool,
+}
+phactory_api::storage_sync::ParachainSynchronizer = struct {
+    sync_state: phactory_api::storage_sync::BlockSyncState<phactory::light_validation::LightValidation<phala_node_runtime::Runtime>>,
+    last_relaychain_state_root: Option<primitive_types::H256>,
+    para_header_number_next: u32,
+}
+Option = enum {
+    [0]None,
+    [1]Some(primitive_types::H256)
+}
+BTreeMap = struct {
+    : Vec<(phactory_api::endpoints::EndpointType, String)>,
+}
+phactory_api::endpoints::EndpointType = enum {
+    [0]I2p,
+    [1]Http,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory::system::System<()>)
+}
+phactory::system::System = struct {
+    platform: (),
+    dev_mode: bool,
+    sealing_path: String,
+    storage_path: String,
+    egress: phala_mq::send_queue::msg_channel::MessageChannel<phala_mq::signer::signers::Sr25519Signer>,
+    system_events: phala_mq::dispatcher::TypedReceiver<phala_types::messaging::SystemEvent>,
+    gatekeeper_launch_events: phala_mq::dispatcher::TypedReceiver<phala_types::messaging::GatekeeperLaunch>,
+    gatekeeper_change_events: phala_mq::dispatcher::TypedReceiver<phala_types::messaging::GatekeeperChange>,
+    key_distribution_events: phala_mq::dispatcher::TypedReceiver<phala_types::messaging::KeyDistribution<u32>>,
+    cluster_key_distribution_events: phala_mq::dispatcher::TypedReceiver<phala_types::contract::messaging::ClusterOperation<sp_core::crypto::AccountId32>>,
+    contract_operation_events: phala_mq::dispatcher::TypedReceiver<phala_types::contract::messaging::ContractOperation<primitive_types::H256,sp_core::crypto::AccountId32>>,
+    worker_state: phactory::system::WorkerState,
+    gatekeeper: Option<phactory::system::gk::Gatekeeper<phala_mq::send_queue::msg_channel::MessageChannel<phala_mq::signer::signers::Sr25519Signer>>>,
+    contracts: phactory::contracts::support::keeper::ContractsKeeper,
+    contract_cluster: Option<phactory::contracts::pink::Cluster>,
+    block_number: u32,
+    now_ms: u64,
+    genesis_block: u32,
+}
+phala_mq::send_queue::msg_channel::MessageChannel = struct {
+    sender: phala_mq::types::MessageOrigin,
+    signer: phala_mq::signer::signers::Sr25519Signer,
+}
+phala_mq::signer::signers::Sr25519Signer = struct {
+}
+phala_mq::types::MessageOrigin = enum {
+    [0]Pallet(Vec<u8>)
+    [1]Contract(primitive_types::H256)
+    [2]Worker(sp_core::sr25519::Public)
+    [3]AccountId(primitive_types::H256)
+    [4]MultiLocation(Vec<u8>)
+    [5]Gatekeeper,
+    [6]Cluster(primitive_types::H256)
+    [255]Reserved,
+}
+sp_core::sr25519::Public = struct {
+    : [u8; 32],
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::messaging::SystemEvent = enum {
+    [0]WorkerEvent(phala_types::messaging::WorkerEventWithKey)
+    [1]HeartbeatChallenge(phala_types::messaging::HeartbeatChallenge)
+}
+phala_types::messaging::WorkerEventWithKey = struct {
+    pubkey: sp_core::sr25519::Public,
+    event: phala_types::messaging::WorkerEvent,
+}
+phala_types::messaging::WorkerEvent = enum {
+    [0]Registered(phala_types::messaging::WorkerInfo)
+    [1]BenchStart {
+        duration: u32,
+    }
+    [2]BenchScore(u32)
+    [3]Started {
+        session_id: u32,
+        init_v: u128,
+        init_p: u32,
+    }
+    [4]Stopped,
+    [5]EnterUnresponsive,
+    [6]ExitUnresponsive,
+}
+phala_types::messaging::WorkerInfo = struct {
+    confidence_level: u8,
+}
+phala_types::messaging::HeartbeatChallenge = struct {
+    seed: primitive_types::U256,
+    online_target: primitive_types::U256,
+}
+primitive_types::U256 = struct {
+    : [u64; 4],
+}
+phala_mq::dispatcher::ReceiverTypeInfo = struct {
+    inner: (),
+    topic: Vec<u8>,
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::messaging::GatekeeperLaunch = enum {
+    [0]FirstGatekeeper(phala_types::messaging::NewGatekeeperEvent)
+    [1]MasterPubkeyOnChain(phala_types::messaging::MasterPubkeyEvent)
+    [2]RotateMasterKey(phala_types::messaging::RotateMasterKeyEvent)
+    [3]MasterPubkeyRotated(phala_types::messaging::MasterPubkeyEvent)
+}
+phala_types::messaging::NewGatekeeperEvent = struct {
+    pubkey: sp_core::sr25519::Public,
+    ecdh_pubkey: sp_core::sr25519::Public,
+}
+phala_types::messaging::MasterPubkeyEvent = struct {
+    master_pubkey: sp_core::sr25519::Public,
+}
+phala_types::messaging::RotateMasterKeyEvent = struct {
+    rotation_id: u64,
+    gk_identities: Vec<phala_types::WorkerIdentity>,
+}
+phala_types::WorkerIdentity = struct {
+    pubkey: sp_core::sr25519::Public,
+    ecdh_pubkey: sp_core::sr25519::Public,
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::messaging::GatekeeperChange = enum {
+    [0]Registered(phala_types::messaging::NewGatekeeperEvent)
+    [1]Unregistered(phala_types::messaging::RemoveGatekeeperEvent)
+}
+phala_types::messaging::RemoveGatekeeperEvent = struct {
+    pubkey: sp_core::sr25519::Public,
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::messaging::KeyDistribution = enum {
+    [0]MasterKeyDistribution(phala_types::messaging::DispatchMasterKeyEvent)
+    [1]MasterKeyRotation(phala_types::messaging::BatchRotateMasterKeyEvent)
+    [2]MasterKeyHistory(phala_types::messaging::DispatchMasterKeyHistoryEvent<u32>)
+}
+phala_types::messaging::DispatchMasterKeyEvent = struct {
+    dest: sp_core::sr25519::Public,
+    ecdh_pubkey: sp_core::sr25519::Public,
+    encrypted_master_key: Vec<u8>,
+    iv: [u8; 12],
+}
+phala_types::messaging::BatchRotateMasterKeyEvent = struct {
+    rotation_id: u64,
+    secret_keys: BTreeMap<sp_core::sr25519::Public,phala_types::messaging::EncryptedKey>,
+    sender: sp_core::sr25519::Public,
+    sig: Vec<u8>,
+}
+BTreeMap = struct {
+    : Vec<(sp_core::sr25519::Public, phala_types::messaging::EncryptedKey)>,
+}
+phala_types::messaging::EncryptedKey = struct {
+    ecdh_pubkey: sp_core::sr25519::Public,
+    encrypted_key: Vec<u8>,
+    iv: [u8; 12],
+}
+phala_types::messaging::DispatchMasterKeyHistoryEvent = struct {
+    dest: sp_core::sr25519::Public,
+    encrypted_master_key_history: Vec<(u64, u32, phala_types::messaging::EncryptedKey)>,
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::contract::messaging::ClusterOperation = enum {
+    [0]DispatchKeys(phala_types::contract::messaging::BatchDispatchClusterKeyEvent)
+    [1]DestroyCluster(primitive_types::H256)
+    [2]UploadResource {
+        origin: sp_core::crypto::AccountId32,
+        cluster_id: primitive_types::H256,
+        resource_type: phala_types::contract::messaging::ResourceType,
+        resource_data: Vec<u8>,
+    }
+    [3]Deposit {
+        cluster_id: primitive_types::H256,
+        account: sp_core::crypto::AccountId32,
+        amount: u128,
+    }
+    [4]RemoveWorker {
+        cluster_id: primitive_types::H256,
+        worker: sp_core::sr25519::Public,
+    }
+}
+sp_core::crypto::AccountId32 = struct {
+    : [u8; 32],
+}
+phala_types::contract::messaging::BatchDispatchClusterKeyEvent = struct {
+    secret_keys: BTreeMap<sp_core::sr25519::Public,phala_types::messaging::EncryptedKey>,
+    cluster: primitive_types::H256,
+    owner: sp_core::crypto::AccountId32,
+    deposit: u128,
+    gas_price: u128,
+    deposit_per_item: u128,
+    deposit_per_byte: u128,
+    treasury_account: sp_core::crypto::AccountId32,
+}
+phala_types::contract::messaging::ResourceType = enum {
+    [0]InkCode,
+    [1]SidevmCode,
+    [2]IndeterministicInkCode,
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::contract::messaging::ContractOperation = enum {
+    [0]InstantiateCode {
+        contract_info: phala_types::contract::ContractInfo<primitive_types::H256,sp_core::crypto::AccountId32>,
+        transfer: u128,
+        gas_limit: u64,
+        storage_deposit_limit: Option<u128>,
+    }
+}
+phala_types::contract::ContractInfo = struct {
+    deployer: sp_core::crypto::AccountId32,
+    code_index: phala_types::contract::CodeIndex<primitive_types::H256>,
+    salt: Vec<u8>,
+    cluster_id: primitive_types::H256,
+    instantiate_data: Vec<u8>,
+}
+phala_types::contract::CodeIndex = enum {
+    [0]WasmCode(primitive_types::H256)
+}
+Option = enum {
+    [0]None,
+    [1]Some(u128)
+}
+phactory::system::WorkerState = struct {
+    hashed_id: primitive_types::U256,
+    registered: bool,
+    bench_state: Option<phactory::system::BenchState>,
+    working_state: Option<phactory::system::WorkingInfo>,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory::system::BenchState)
+}
+phactory::system::BenchState = struct {
+    start_block: u32,
+    start_time: u64,
+    start_iter: u64,
+    duration: u32,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory::system::WorkingInfo)
+}
+phactory::system::WorkingInfo = struct {
+    session_id: u32,
+    state: phactory::system::WorkingState,
+    start_time: u64,
+    start_iter: u64,
+}
+phactory::system::WorkingState = enum {
+    [0]Computing,
+    [1]Paused,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory::system::gk::Gatekeeper<phala_mq::send_queue::msg_channel::MessageChannel<phala_mq::signer::signers::Sr25519Signer>>)
+}
+phactory::system::gk::Gatekeeper = struct {
+    master_pubkey_on_chain: bool,
+    registered_on_chain: bool,
+    master_key_history: Vec<phactory::system::master_key::RotatedMasterKey>,
+    egress: phala_mq::send_queue::msg_channel::MessageChannel<phala_mq::signer::signers::Sr25519Signer>,
+    gatekeeper_events: phala_mq::dispatcher::TypedReceiver<phala_types::messaging::GatekeeperEvent>,
+    cluster_events: phala_mq::dispatcher::TypedReceiver<phala_types::contract::messaging::ClusterEvent>,
+    last_random_number: [u8; 32],
+    iv_seq: u64,
+    computing_economics: phactory::system::gk::ComputingEconomics<phala_mq::send_queue::msg_channel::MessageChannel<phala_mq::signer::signers::Sr25519Signer>>,
+}
+phactory::system::master_key::RotatedMasterKey = struct {
+    rotation_id: u64,
+    block_height: u32,
+    secret: [u8; 64],
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::messaging::GatekeeperEvent = enum {
+    [0]NewRandomNumber(phala_types::messaging::RandomNumberEvent)
+    [1]TokenomicParametersChanged(phala_types::messaging::TokenomicParameters)
+    [2]_RepairV,
+    [3]_PhalaLaunched,
+    [4]_UnrespFix,
+}
+phala_types::messaging::RandomNumberEvent = struct {
+    block_number: u32,
+    random_number: [u8; 32],
+    last_random_number: [u8; 32],
+}
+phala_types::messaging::TokenomicParameters = struct {
+    pha_rate: u128,
+    rho: u128,
+    budget_per_block: u128,
+    v_max: u128,
+    cost_k: u128,
+    cost_b: u128,
+    slash_rate: u128,
+    treasury_ratio: u128,
+    heartbeat_window: u32,
+    rig_k: u128,
+    rig_b: u128,
+    re: u128,
+    k: u128,
+    kappa: u128,
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::contract::messaging::ClusterEvent = enum {
+    [0]DeployCluster {
+        owner: sp_core::crypto::AccountId32,
+        cluster: primitive_types::H256,
+        workers: Vec<phala_types::WorkerIdentity>,
+        deposit: u128,
+        gas_price: u128,
+        deposit_per_item: u128,
+        deposit_per_byte: u128,
+        treasury_account: sp_core::crypto::AccountId32,
+    }
+}
+phactory::system::gk::ComputingEconomics = struct {
+    egress: phala_mq::send_queue::msg_channel::MessageChannel<phala_mq::signer::signers::Sr25519Signer>,
+    computing_events: phala_mq::dispatcher::TypedReceiver<phala_types::messaging::WorkingReportEvent>,
+    system_events: phala_mq::dispatcher::TypedReceiver<phala_types::messaging::SystemEvent>,
+    gatekeeper_events: phala_mq::dispatcher::TypedReceiver<phala_types::messaging::GatekeeperEvent>,
+    workers: BTreeMap<sp_core::sr25519::Public,phactory::system::gk::WorkerInfo>,
+}
+phala_mq::dispatcher::TypedReceiver = struct {
+    queue: phala_mq::dispatcher::ReceiverTypeInfo,
+}
+phala_types::messaging::WorkingReportEvent = enum {
+    [0]Heartbeat {
+        session_id: u32,
+        challenge_block: u32,
+        challenge_time: u64,
+        iterations: u64,
+    }
+    [1]HeartbeatV2 {
+        session_id: u32,
+        challenge_block: u32,
+        challenge_time: u64,
+        iterations: u64,
+        n_clusters: u32,
+        n_contracts: u32,
+    }
+}
+BTreeMap = struct {
+    : Vec<(sp_core::sr25519::Public, phactory::system::gk::WorkerInfo)>,
+}
+phactory::system::gk::WorkerInfo = struct {
+    state: phactory::system::WorkerState,
+    waiting_heartbeats: Vec<u32>,
+    unresponsive: bool,
+    heartbeat_flag: bool,
+}
+phactory::contracts::support::keeper::ContractsKeeper = struct {
+    contracts: BTreeMap<sp_core::crypto::AccountId32,phactory::contracts::support::Contract>,
+}
+BTreeMap = struct {
+    : Vec<(sp_core::crypto::AccountId32, phactory::contracts::support::Contract)>,
+}
+phactory::contracts::support::Contract = struct {
+    send_mq: phala_mq::send_queue::msg_channel::MessageChannel<phala_mq::signer::signers::Sr25519Signer>,
+    cluster_id: primitive_types::H256,
+    address: sp_core::crypto::AccountId32,
+    sidevm_info: Option<phactory::contracts::support::SidevmInfo>,
+    weight: u32,
+    on_block_end: Option<phactory::contracts::support::OnBlockEnd>,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory::contracts::support::SidevmInfo)
+}
+phactory::contracts::support::SidevmInfo = struct {
+    code: Vec<u8>,
+    code_hash: primitive_types::H256,
+    start_time: String,
+    auto_restart: bool,
+    config: pink::SidevmConfig,
+}
+pink::SidevmConfig = struct {
+    max_code_size: u32,
+    max_memory_pages: u32,
+    vital_capacity: u64,
+    deadline: u32,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory::contracts::support::OnBlockEnd)
+}
+phactory::contracts::support::OnBlockEnd = struct {
+    selector: u32,
+    gas_limit: u64,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory::contracts::pink::Cluster)
+}
+phactory::contracts::pink::Cluster = struct {
+    id: primitive_types::H256,
+    config: phactory::contracts::pink::ClusterConfig,
+    storage: pink_loader::storage::ClusterStorage,
+}
+phactory::contracts::pink::ClusterConfig = struct {
+    log_handler: Option<sp_core::crypto::AccountId32>,
+    runtime_version: (u32, u32),
+    secret_salt: [u8; 32],
+    js_runtime: Option<primitive_types::H256>,
+}
+Option = enum {
+    [0]None,
+    [1]Some(sp_core::crypto::AccountId32)
+}
+pink_loader::storage::ClusterStorage = struct {
+    root: Option<primitive_types::H256>,
+}
+Option = enum {
+    [0]None,
+    [1]Some(phactory_api::proto_generated::pruntime_rpc::NetworkConfig)
+}
+phactory_api::proto_generated::pruntime_rpc::NetworkConfig = struct {
+    all_proxy: String,
+    i2p_proxy: String,
+}
+phactory::Phactory = struct {
+    platform: (),
+    dev_mode: bool,
+    attestation_provider: Option<phala_types::AttestationProvider>,
+    machine_id: Vec<u8>,
+    runtime_info: Option<phactory_api::proto_generated::pruntime_rpc::InitRuntimeResponse>,
+    runtime_state: Option<phactory::RuntimeState>,
+    endpoints: BTreeMap<phactory_api::endpoints::EndpointType,String>,
+    system: Option<phactory::system::System<()>>,
+    netconfig: Option<phactory_api::proto_generated::pruntime_rpc::NetworkConfig>,
+}
+

@@ -1,0 +1,12 @@
+[package]
+name = "cyrux-rocket-middleware"
+version = "0.1.1"
+edition = "2021"
+
+description = "Some Rocket middleware used by cyrux"
+license = "Apache-2.0"
+repository = "https://github.com/Cyrux-Network/cyrux-blockchain"
+
+[dependencies]
+rocket = "0.5.0"
+log = "0.4.16"

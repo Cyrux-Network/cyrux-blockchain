@@ -1,0 +1,69 @@
+[package]
+name = "phactory-api"
+version = "0.1.0"
+edition = "2018"
+resolver = "2"
+
+[dependencies]
+parity-scale-codec   = { package = "parity-scale-codec", version = "3.6.5", default-features = false, features = ["derive"] }
+scale-info = { version = "2.10.0", default-features = false, features = ["derive"] }
+serde = { version = "1", features = ["derive"], default-features = false }
+base64 = { version = "0.13" }
+derive_more = { version = "0.99.17" }
+prost = "0.11.8"
+
+cyrux-trie-storage = { path = "../../../crates/cyrux-trie-storage", default-features = false, features = ["serde"] }
+cyrux-types = { path = "../../../crates/cyrux-types", default-features = false, features = ["enable_serde", "sgx"] }
+prpc = { path = "../../../crates/prpc", default-features = false }
+cyrux-crypto = { path = "../../../crates/cyrux-crypto" }
+chain = { path = "../../../standalone/runtime", default-features = false, package = "cyrux-node-runtime" }
+
+sp-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+frame-system = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false, features = ["full_crypto"] }
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+
+# for pruntime_client
+async-trait = "0.1.57"
+anyhow = { version = "1.0.69", optional = true }
+log = { version = "0.4.14" }
+reqwest = { version = "0.11", optional = true, default-features = false, features = ["rustls-tls", "socks"] }
+
+serde_json = "1.0.79"
+im = "15"
+ethers = "2.0.8"
+
+hex-literal = "0.4.1"
+secp256k1 = "0.28.0"
+
+[dev-dependencies]
+insta = "1.13.0"
+hex = "0.4.3"
+type-info-stringify = { path = "../../type-info-stringify" }
+
+[build-dependencies]
+prpc-build = { path = "../../../crates/prpc-build" }
+tera = { version = "1.12.1" }
+tempdir = { version = "0.3.7" }
+
+[features]
+default = ["std"]
+
+std = [
+    "derive_serde",
+    "sp-core/full_crypto",
+    "sp-runtime/std",
+    "frame-system/std",
+    "chain/std",
+    "prpc/std",
+]
+
+sgx = []
+pruntime-client = [
+    "anyhow",
+    "reqwest",
+]
+
+derive_serde = [
+    "cyrux-trie-storage/serde",
+]
