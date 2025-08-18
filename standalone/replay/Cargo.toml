@@ -1,0 +1,29 @@
+[package]
+name = "replay"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+cyrux-mq = { path = "../../crates/cyrux-mq" }
+cyrux-types = { path = "../../crates/cyrux-types" }
+phactory = { path = "../../crates/phactory", features = ["gk-stat"] }
+phactory-api = { path = "../../crates/phactory/api" }
+pherry = { path = "../pherry" }
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+
+log = "0.4.14"
+anyhow = "1.0.69"
+clap = { version = "4.0.32", features = ["derive"] }
+tokio = { version = "1.24.2", features = ["full"] }
+sqlx = { version = "0.5.13", features = ["postgres", "decimal", "chrono", "runtime-tokio-rustls"] }
+chrono = { version = "0.4.22" }
+actix-web = "4"
+actix-rt = "2"
+serde_json = "1.0"
+parity-scale-codec = "3.6.5"
+env_logger = "0.9.0"
+hex = "*"
+serde = "1.0"
+serde_cbor = "0.11.2"
+hex_fmt = "0.3"
+cyrux-pallets = { path = "../../pallets/cyrux" }

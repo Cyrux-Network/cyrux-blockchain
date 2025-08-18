@@ -1,0 +1,37 @@
+[package]
+name = "pherry"
+version = "0.1.2"
+authors = ["h4x3rotab <h4x3rotab@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.69"
+env_logger = "0.9.0"
+futures = { package = "futures", version = "0.3.4" }
+log = "0.4"
+tokio = { version = "1.24.2", features = ["full"] }
+reqwest = { version = "0.11", default-features = false, features = ["rustls-tls", "socks"] }
+hex = "0.4.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.0.32", features = ["derive"] }
+
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-trie = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", package = "sp-runtime" }
+sp-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+sc-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0", default-features = false }
+codec = { package = 'parity-scale-codec', version = "3.6.5" }
+hash-db = "0.16.0"
+
+cyrux-types = { path = "../../crates/cyrux-types" }
+cyrux-pallets = { path = "../../pallets/cyrux" }
+cyrux-trie-storage = { path = "../../crates/cyrux-trie-storage" }
+cyrux-node-rpc-ext = { path = "../../crates/cyrux-node-rpc-ext" }
+phactory-api = { path = "../../crates/phactory/api", features = ["pruntime-client"] }
+
+phaxt = { path = "../../crates/phaxt" }
+sgx-attestation = { path = "../../crates/sgx-attestation", features = ["report"] }
+async-stream = "0.3.4"

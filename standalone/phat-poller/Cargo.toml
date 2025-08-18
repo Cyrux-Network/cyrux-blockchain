@@ -1,0 +1,36 @@
+[package]
+name = "phat-poller"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+phaxt = { path = "../../crates/phaxt" }
+phactory-api = { path = "../../crates/phactory/api", features = ["pruntime-client"] }
+cyrux-crypto = { path = "../../crates/cyrux-crypto" }
+cyrux-types = { path = "../../crates/cyrux-types" }
+cyrux-clap-parsers = { path = "../../crates/cyrux-clap-parsers" }
+
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "release-polkadot-v1.5.0" }
+
+tracing = "0.1"
+tracing-subscriber = "0.3"
+anyhow = "1.0.69"
+clap = { version = "4.0.32", features = ["derive"] }
+tokio = { version = "1.24.2", features = ["full"] }
+chrono = { version = "0.4.22" }
+rocket = "0.5.0"
+scale = { package = 'parity-scale-codec', version = "3.6.5" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+futures = "0.3"
+rand = "0.8"
+hex = "0.4"
+abort-on-drop = "0.2"
+once_cell = "1"
+
+pallet-contracts = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false, branch = "release-polkadot-v1.5.0" }
+
+# For our forked legacy ContractResult
+scale-info = { version = "2.10.0", features = ["derive"] }
+sp-weights = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false, branch = "release-polkadot-v1.5.0" }
